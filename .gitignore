@@ -1,0 +1,33 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Root duplicates and original export archives
+/Bushers Adaptive logo 1.svg
+/bushers 1.svg
+/Bushers_Samsung_NU_TU_ESP32_CLASICO.ino.*
+/boot_app0.bin
+/stitch_spectrum_webserial_firmware_flasher.zip
+/stitch_spectrum_webserial_firmware_flasher/
+
