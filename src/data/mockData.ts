@@ -56,5 +56,5 @@ export const BAUD_RATES = [
 export const PORT_INFO = {
   vendorId: "0x1A86 (CH340)",
   productId: "0x7523",
-  driverName: "WCH USB-Serial driver detected",
+  driverName: "Controlador USB-Serial WCH detectado",
 };

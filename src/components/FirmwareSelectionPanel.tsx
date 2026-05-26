@@ -1,5 +1,9 @@
 import React, { useRef } from "react";
 import { Checkbox } from "@react-spectrum/s2/Checkbox";
+import { TextField } from "@react-spectrum/s2/TextField";
+import { Heading } from "@react-spectrum/s2/Heading";
+import { Button } from "@react-spectrum/s2/Button";
+import { ActionButton } from "@react-spectrum/s2/ActionButton";
 import { INITIAL_FIRMWARE_FILES, MERGED_FIRMWARE_FILE } from "../data/mockData";
 import type { CustomFile } from "../hooks/useESPFlash";
 
@@ -38,18 +42,17 @@ export const FirmwareSelectionPanel: React.FC<FirmwareSelectionPanelProps> = ({
     const file = e.target.files?.[0];
     if (file) {
       onAddCustomFile(file);
-      // Clear input so same file can be uploaded again
       e.target.value = "";
     }
   };
 
   return (
-    <section className="bg-surface-white border border-outline-variant overflow-hidden flex flex-col">
-      {/* Panel Header */}
+    <section className="bg-surface-white border border-outline-variant overflow-hidden flex flex-col rounded-sm shadow-xs">
+      {/* Encabezado del Panel */}
       <div className="bg-surface-container-low px-md py-sm border-b border-outline-variant flex justify-between items-center">
-        <h2 className="font-headline-sm text-headline-sm text-on-surface">
-          Firmware Selection
-        </h2>
+        <Heading level={2} UNSAFE_className="m-0 font-headline-sm text-headline-sm text-on-surface">
+          Selección de Firmware
+        </Heading>
         <div className="flex gap-2">
           <input
             type="file"
@@ -59,24 +62,24 @@ export const FirmwareSelectionPanel: React.FC<FirmwareSelectionPanelProps> = ({
             className="hidden"
             disabled={isFlashing}
           />
-          <button
-            onClick={handleAddFilesClick}
-            disabled={isFlashing || singleBinaryMode}
-            className={`font-label-bold text-label-bold flex items-center gap-1 px-3 py-1.5 transition-colors rounded ${
-              singleBinaryMode
-                ? "text-secondary opacity-50 cursor-not-allowed"
-                : "text-primary hover:bg-primary-container/20 active:scale-95"
-            }`}
+          <Button
+            variant="primary"
+            fillStyle="outline"
+            size="S"
+            isDisabled={isFlashing || singleBinaryMode}
+            onPress={handleAddFilesClick}
           >
-            <span className="material-symbols-outlined text-[18px]" data-icon="upload_file">
-              upload_file
+            <span className="flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-[18px]" data-icon="upload_file">
+                upload_file
+              </span>
+              AGREGAR ARCHIVOS
             </span>
-            ADD FILES
-          </button>
+          </Button>
         </div>
       </div>
 
-      {/* Firmware Files Table */}
+      {/* Tabla de Archivos de Firmware */}
       <div className={`overflow-x-auto transition-opacity duration-200 ${singleBinaryMode ? "opacity-40" : "opacity-100"}`}>
         <table className="w-full text-left border-collapse">
           <thead>
@@ -85,21 +88,21 @@ export const FirmwareSelectionPanel: React.FC<FirmwareSelectionPanelProps> = ({
                 #
               </th>
               <th className="px-md py-2.5 font-label-bold text-label-bold text-tertiary">
-                FILE NAME
+                NOMBRE DEL ARCHIVO
               </th>
               <th className="px-md py-2.5 font-label-bold text-label-bold text-tertiary w-32">
-                OFFSET
+                DIRECCIÓN (OFFSET)
               </th>
               <th className="px-md py-2.5 font-label-bold text-label-bold text-tertiary text-right w-24">
-                SIZE
+                TAMAÑO
               </th>
               <th className="px-md py-2.5 font-label-bold text-label-bold text-tertiary w-16 text-center">
-                REMOVE
+                ELIMINAR
               </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-surface-container">
-            {/* Built-in Files */}
+            {/* Archivos Iniciales por Defecto */}
             {INITIAL_FIRMWARE_FILES.map((file) => (
               <tr key={file.id} className="hover:bg-surface-container-low transition-colors group">
                 <td className="px-md py-3 text-center">
@@ -113,12 +116,13 @@ export const FirmwareSelectionPanel: React.FC<FirmwareSelectionPanelProps> = ({
                   {file.name}
                 </td>
                 <td className="px-md py-3">
-                  <input
-                    type="text"
+                  <TextField
+                    aria-label="Dirección de Offset"
                     value={fileOffsets[file.id] || file.offset}
-                    onChange={(e) => onUpdateOffset(file.id, e.target.value)}
-                    disabled={isFlashing || singleBinaryMode}
-                    className="font-code-sm text-code-sm border border-outline-variant rounded-sm h-8 px-2 focus:border-primary outline-none text-center w-24 bg-surface-white disabled:bg-surface-container disabled:text-secondary"
+                    onChange={(val) => onUpdateOffset(file.id, val)}
+                    isDisabled={isFlashing || singleBinaryMode}
+                    size="S"
+                    UNSAFE_className="w-24 text-center font-code-sm text-code-sm"
                   />
                 </td>
                 <td className="px-md py-3 font-code-sm text-code-sm text-right text-secondary">
@@ -132,7 +136,7 @@ export const FirmwareSelectionPanel: React.FC<FirmwareSelectionPanelProps> = ({
               </tr>
             ))}
 
-            {/* Custom Uploaded Files */}
+            {/* Archivos Cargados Personalizados */}
             {customFiles.map((file) => (
               <tr key={file.id} className="hover:bg-surface-container-low transition-colors group bg-primary/5">
                 <td className="px-md py-3 text-center">
@@ -149,27 +153,29 @@ export const FirmwareSelectionPanel: React.FC<FirmwareSelectionPanelProps> = ({
                   {file.name}
                 </td>
                 <td className="px-md py-3">
-                  <input
-                    type="text"
+                  <TextField
+                    aria-label="Dirección de Offset"
                     value={file.offset}
-                    onChange={(e) => onUpdateOffset(file.id, e.target.value)}
-                    disabled={isFlashing || singleBinaryMode}
-                    className="font-code-sm text-code-sm border border-primary/50 rounded-sm h-8 px-2 focus:border-primary outline-none text-center w-24 bg-surface-white disabled:bg-surface-container"
+                    onChange={(val) => onUpdateOffset(file.id, val)}
+                    isDisabled={isFlashing || singleBinaryMode}
+                    size="S"
+                    UNSAFE_className="w-24 text-center font-code-sm text-code-sm"
                   />
                 </td>
                 <td className="px-md py-3 font-code-sm text-code-sm text-right text-primary">
                   {file.sizeText}
                 </td>
                 <td className="px-md py-3 text-center">
-                  <button
-                    onClick={() => onRemoveCustomFile(file.id)}
-                    disabled={isFlashing || singleBinaryMode}
-                    className="text-status-error hover:text-status-error-dark p-1 rounded hover:bg-red-50 disabled:opacity-35 transition-colors"
+                  <ActionButton
+                    onPress={() => onRemoveCustomFile(file.id)}
+                    isDisabled={isFlashing || singleBinaryMode}
+                    isQuiet
+                    aria-label="Eliminar archivo personalizado"
                   >
-                    <span className="material-symbols-outlined text-[18px]" data-icon="delete">
+                    <span className="material-symbols-outlined text-[18px] text-status-error" data-icon="delete">
                       delete
                     </span>
-                  </button>
+                  </ActionButton>
                 </td>
               </tr>
             ))}
@@ -177,7 +183,7 @@ export const FirmwareSelectionPanel: React.FC<FirmwareSelectionPanelProps> = ({
             {customFiles.length === 0 && (
               <tr>
                 <td colSpan={5} className="px-md py-3 text-center text-secondary text-xs italic">
-                  No custom binaries added. Click "ADD FILES" to flash custom ESP32 binaries.
+                  No se han agregado binarios personalizados. Haga clic en "AGREGAR ARCHIVOS" para flashear binarios de ESP32 personalizados.
                 </td>
               </tr>
             )}
@@ -185,8 +191,8 @@ export const FirmwareSelectionPanel: React.FC<FirmwareSelectionPanelProps> = ({
         </table>
       </div>
 
-      {/* Merged Single Binary Toggle Area */}
-      <div className="m-md p-md bg-surface-container-highest border border-outline border-dashed rounded flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      {/* Selector de Modo de Binario Único Fusionado */}
+      <div className="m-md mt-0 p-md bg-surface-container-highest border border-outline border-dashed rounded flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="bg-primary-container p-2 rounded shrink-0">
             <span className="material-symbols-outlined text-on-primary-container" data-icon="merge">
@@ -194,7 +200,7 @@ export const FirmwareSelectionPanel: React.FC<FirmwareSelectionPanelProps> = ({
             </span>
           </div>
           <div>
-            <p className="font-label-bold text-label-bold text-on-surface">Single Binary Mode</p>
+            <p className="font-label-bold text-label-bold text-on-surface">Modo de Binario Único</p>
             <p className="text-[11px] text-on-surface-variant font-code-sm break-all">
               {MERGED_FIRMWARE_FILE.name}
             </p>
@@ -202,21 +208,27 @@ export const FirmwareSelectionPanel: React.FC<FirmwareSelectionPanelProps> = ({
         </div>
 
         {singleBinaryMode ? (
-          <button
-            onClick={() => onToggleSingleBinaryMode(false)}
-            disabled={isFlashing}
-            className="w-full sm:w-auto bg-primary text-on-primary px-4 py-1.5 font-label-bold text-label-bold rounded shadow-sm hover:bg-primary/90 transition-all"
+          <Button
+            variant="primary"
+            fillStyle="fill"
+            size="S"
+            isDisabled={isFlashing}
+            onPress={() => onToggleSingleBinaryMode(false)}
+            UNSAFE_className="w-full sm:w-auto"
           >
-            USE MULTI-FILE
-          </button>
+            USAR MULTI-ARCHIVO
+          </Button>
         ) : (
-          <button
-            onClick={() => onToggleSingleBinaryMode(true)}
-            disabled={isFlashing}
-            className="w-full sm:w-auto bg-surface-white border border-outline-variant px-4 py-1.5 font-label-bold text-label-bold text-secondary hover:text-primary hover:border-primary transition-all rounded"
+          <Button
+            variant="secondary"
+            fillStyle="outline"
+            size="S"
+            isDisabled={isFlashing}
+            onPress={() => onToggleSingleBinaryMode(true)}
+            UNSAFE_className="w-full sm:w-auto"
           >
-            USE MERGED
-          </button>
+            USAR BINARIO FUSIONADO
+          </Button>
         )}
       </div>
     </section>

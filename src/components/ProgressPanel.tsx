@@ -18,7 +18,7 @@ export const ProgressPanel: React.FC<ProgressPanelProps> = ({
   return (
     <section className="bg-surface-white border border-outline-variant p-md">
       <div className="flex flex-col md:flex-row items-center gap-6">
-        {/* Flash button using Spectrum S2 Button */}
+        {/* Botón de flasheo usando Spectrum S2 Button */}
         <div className="w-full md:w-auto flex-shrink-0">
           <Button
             variant="accent"
@@ -33,15 +33,15 @@ export const ProgressPanel: React.FC<ProgressPanelProps> = ({
               <span className="material-symbols-outlined text-[24px]" data-icon="bolt">
                 bolt
               </span>
-              FLASH FIRMWARE
+              FLASHEAR FIRMWARE
             </span>
           </Button>
         </div>
 
-        {/* Progress Bar Area using Spectrum S2 ProgressBar */}
+        {/* Progreso de la Operación usando Spectrum S2 ProgressBar */}
         <div className="flex-grow w-full space-y-2">
           <ProgressBar
-            label="Operation Progress"
+            label="Progreso de la Operación"
             value={progress}
             size="M"
           />
